@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Young Star FC</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Hind+Siliguri:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#c0182a;--red-dark:#8c0f1e;--red-light:#e63247;--red-mid:#a81422;
+  --white:#ffffff;--off-white:#fdf5f5;--bg:#ffffff;
+  --card:#fff8f8;--card2:#ffeef0;
+  --text:#1a0608;--text-mid:#4a1520;--text-light:#8a4050;
+  --border:rgba(192,24,42,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Hind Siliguri',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* ══ NAV ══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 36px;
+  background:rgba(255,255,255,.97);backdrop-filter:blur(14px);
+  border-bottom:3px solid var(--red);
+  box-shadow:0 2px 20px rgba(192,24,42,.12);
+}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:3px;color:var(--red);}
+.nav-logo span{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-links{display:flex;gap:22px;list-style:none;}
+.nav-links a{font-family:'Oswald',sans-serif;font-size:.83rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);text-decoration:none;transition:color .3s;}
+.nav-links a:hover{color:var(--red);}
+.btn-lang{font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;background:transparent;border:1.5px solid var(--red);color:var(--red);padding:6px 13px;border-radius:2px;cursor:pointer;transition:all .3s;}
+.btn-lang:hover{background:var(--red);color:#fff;}
+.btn-admin{font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;background:var(--red);border:none;color:#fff;padding:7px 15px;border-radius:2px;cursor:pointer;font-weight:700;transition:all .3s;}
+.btn-admin:hover{background:var(--red-dark);}
+.btn-admin.logged{background:#1a6630;color:#7fffa0;}
+
+/* ══ HERO + SLIDER ══ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding-top:80px;text-align:center;
+}
+.hero-slider{
+  position:absolute;inset:0;
+  display:flex;
+  transition:transform .9s cubic-bezier(.77,0,.18,1);
+  will-change:transform;
+}
+.hero-slide{
+  min-width:100%;height:100%;flex-shrink:0;position:relative;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+.hero-slide.default-slide{
+  background:linear-gradient(145deg,#fff 0%,#ffe8eb 35%,#ffc8cf 65%,#c0182a 100%);
+}
+.hero-slide.has-image::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.5) 0%,rgba(255,220,224,.4) 50%,rgba(192,24,42,.15) 100%);
+}
+.hero-slide::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background-image:repeating-linear-gradient(90deg,rgba(192,24,42,.04) 0 1px,transparent 1px 80px),
+    repeating-linear-gradient(0deg,rgba(192,24,42,.04) 0 1px,transparent 1px 80px);
+}
+.hero-circle{
+  position:absolute;width:560px;height:560px;border-radius:50%;
+  border:1.5px solid rgba(192,24,42,.18);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 100px 30px rgba(192,24,42,.06);
+  z-index:2;pointer-events:none;
+}
+/* Arrows */
+.slider-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
+  width:46px;height:46px;border-radius:50%;border:2px solid rgba(192,24,42,.3);
+  background:rgba(255,255,255,.8);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1.2rem;color:var(--red);
+  transition:all .3s;box-shadow:0 2px 14px rgba(192,24,42,.12);
+}
+.slider-arrow:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.slider-arrow.prev{left:22px;}
+.slider-arrow.next{right:22px;}
+/* Dots */
+.slider-dots{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  display:flex;gap:9px;z-index:10;
+}
+.s-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(192,24,42,.2);border:2px solid rgba(192,24,42,.35);
+  cursor:pointer;transition:all .3s;
+}
+.s-dot.active{background:var(--red);border-color:var(--red);transform:scale(1.3);}
+/* Slide counter */
+.slide-counter{
+  position:absolute;bottom:26px;right:28px;z-index:10;
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;
+  color:rgba(192,24,42,.5);
+}
+.hero-content{position:relative;z-index:5;}
+.star-row{font-size:1.7rem;color:var(--red);margin-bottom:8px;animation:blink 2.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,9.5rem);line-height:.9;letter-spacing:4px;color:var(--text);text-shadow:2px 4px 24px rgba(192,24,42,.18);}
+.hero h1 .g{color:var(--red);}
+.hero-sub{font-family:'Oswald',sans-serif;font-size:1.05rem;letter-spacing:8px;text-transform:uppercase;color:var(--red-mid);margin:14px 0 26px;}
+.est-pill{display:inline-flex;align-items:center;gap:10px;padding:8px 22px;border:1.5px solid var(--red);font-family:'Oswald',sans-serif;font-size:.82rem;letter-spacing:4px;color:var(--red);border-radius:2px;background:rgba(255,255,255,.65);backdrop-filter:blur(4px);}
+
+/* ══ STATS STRIP ══ */
+.stats-strip{background:linear-gradient(90deg,var(--red-dark),var(--red),var(--red-light));padding:18px 40px;display:flex;justify-content:center;gap:52px;flex-wrap:wrap;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;color:#fff;line-height:1;}
+.stat-label{font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.75);}
+
+/* ══ TEAM PHOTO SECTION ══ */
+#team-photo-section{
+  position:relative;min-height:440px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+#team-photo-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--red-dark),var(--red-light));
+  background-size:cover;background-position:center;
+  transition:background-image .5s;
+}
+#team-photo-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom, rgba(140,15,30,.25) 0%, rgba(140,15,30,.55) 100%);
+}
+.team-photo-content{position:relative;z-index:2;text-align:center;padding:40px 20px;}
+.team-photo-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,6vw,4.5rem);
+  letter-spacing:4px;
+  text-shadow:0 4px 30px rgba(0,0,0,.8);
+  margin-bottom:10px;
+}
+.team-photo-title .g{color:#ffe0e4;}
+.team-photo-sub{
+  font-family:'Oswald',sans-serif;font-size:.9rem;
+  letter-spacing:5px;text-transform:uppercase;
+  color:rgba(255,224,228,.7);margin-bottom:24px;
+}
+.team-photo-empty{
+  border:2px dashed rgba(255,255,255,.3);
+  border-radius:8px;padding:60px 40px;text-align:center;
+}
+.team-photo-empty .icon{font-size:3rem;margin-bottom:12px;opacity:.5;}
+.team-photo-empty p{font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:2px;color:rgba(255,255,255,.45);text-transform:uppercase;}
+
+/* ══ SECTIONS ══ */
+.sec{padding:76px 40px;max-width:1080px;margin:0 auto;}
+.stag{font-family:'Oswald',sans-serif;font-size:.7rem;letter-spacing:6px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,4.5vw,3.5rem);letter-spacing:2px;line-height:1;margin-bottom:22px;color:var(--text);}
+.gline{width:54px;height:3px;background:linear-gradient(90deg,var(--red),var(--red-light));margin-bottom:26px;}
+
+/* ══ ABOUT ══ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+.about-text p{line-height:1.85;color:var(--text-light);margin-bottom:14px;font-size:.96rem;}
+.shield-wrap{display:flex;align-items:center;justify-content:center;}
+.shield{
+  width:190px;height:228px;
+  background:linear-gradient(160deg,var(--red-light),var(--red-dark));
+  clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;
+  box-shadow:0 0 60px rgba(192,24,42,.3),inset 0 0 30px rgba(255,255,255,.1);
+  position:relative;
+}
+.shield::before{content:'⭐';position:absolute;top:-17px;font-size:2rem;filter:drop-shadow(0 0 10px rgba(255,100,100,.8));}
+.shield-txt{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;color:#fff;}
+.shield-yr{font-family:'Oswald',sans-serif;font-size:.78rem;color:rgba(255,255,255,.6);letter-spacing:3px;}
+
+/* ══ PLAYERS ══ */
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:16px;margin-top:8px;}
+.pc{
+  background:#fff;
+  border:1px solid rgba(192,24,42,.12);border-radius:6px;
+  padding:22px 16px;text-align:center;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+  cursor:default;position:relative;overflow:hidden;
+  box-shadow:0 2px 12px rgba(192,24,42,.06);
+}
+.pc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s;}
+.pc:hover{transform:translateY(-5px);border-color:var(--red);box-shadow:0 10px 32px rgba(192,24,42,.14);}
+.pc:hover::after{opacity:1;}
+.pc-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:rgba(192,24,42,.1);position:absolute;top:8px;right:11px;line-height:1;}
+.pc-ava{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red-light),var(--red-dark));
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+  margin:0 auto 11px;
+  border:2px solid rgba(192,24,42,.25);
+  overflow:hidden;position:relative;
+}
+.pc-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.pc-name{font-family:'Oswald',sans-serif;font-size:.93rem;font-weight:600;letter-spacing:1px;margin-bottom:3px;color:var(--text);}
+.pc-pos{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--red);font-family:'Oswald',sans-serif;}
+.pc-age{font-size:.7rem;color:var(--text-light);margin-top:3px;}
+
+/* ══ FIXTURES ══ */
+.fix-list{display:flex;flex-direction:column;gap:10px;}
+.fix-card{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:center;gap:14px;
+  padding:15px 20px;
+  background:#fff;
+  border:1px solid rgba(192,24,42,.12);border-radius:4px;
+  transition:border-color .3s,box-shadow .3s;
+  box-shadow:0 2px 10px rgba(192,24,42,.05);
+}
+.fix-card:hover{border-color:var(--red);box-shadow:0 4px 20px rgba(192,24,42,.12);}
+.ft{font-family:'Oswald',sans-serif;font-size:.93rem;font-weight:600;color:var(--text);}
+.ft.h{text-align:right;} .ft.a{text-align:left;}
+.fmeta{font-size:.67rem;color:var(--text-light);text-transform:uppercase;letter-spacing:1px;}
+.fvs{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--red);text-align:center;line-height:1;}
+.badge{display:inline-block;padding:2px 9px;border-radius:2px;font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1px;margin-top:3px;}
+.bw{background:#e6f9ec;color:#1a6630;} .bd{background:#faf7e0;color:#7a6800;}
+.bl{background:#ffeaea;color:#c0182a;} .bu{background:rgba(192,24,42,.08);color:var(--red);}
+
+/* ══ CONTACT ══ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;}
+.c-info{display:flex;flex-direction:column;gap:14px;}
+.c-item{display:flex;align-items:flex-start;gap:13px;padding:16px;background:#fff;border-left:3px solid var(--red);border-radius:2px;box-shadow:0 2px 10px rgba(192,24,42,.06);}
+.c-ico{font-size:1.3rem;}
+.c-lbl{font-family:'Oswald',sans-serif;font-size:.67rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:3px;}
+.c-val{font-size:.9rem;color:var(--text-mid);}
+.social-links{display:flex;flex-direction:column;gap:10px;}
+.s-btn{display:flex;align-items:center;gap:11px;padding:14px 16px;background:#fff;border:1px solid rgba(192,24,42,.15);border-radius:4px;text-decoration:none;color:var(--text);font-family:'Oswald',sans-serif;font-size:.9rem;letter-spacing:1px;transition:all .3s;box-shadow:0 1px 6px rgba(192,24,42,.05);}
+.s-btn:hover{border-color:var(--red);background:rgba(192,24,42,.04);transform:translateX(5px);}
+
+/* ══ FOOTER ══ */
+footer{background:linear-gradient(135deg,var(--red-dark),var(--red));border-top:3px solid rgba(255,255,255,.2);padding:24px 40px;text-align:center;}
+.f-logo{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:4px;color:#fff;margin-bottom:5px;}
+.f-copy{font-size:.73rem;color:rgba(255,255,255,.55);letter-spacing:2px;font-family:'Oswald',sans-serif;}
+
+/* ══ MODAL ══ */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(26,6,8,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border:1px solid rgba(192,24,42,.2);border-radius:6px;width:90%;max-width:520px;padding:34px;position:relative;animation:slideUp .28s ease;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(192,24,42,.15);}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:13px;right:16px;background:none;border:none;color:rgba(74,21,32,.3);font-size:1.4rem;cursor:pointer;transition:color .2s;}
+.modal-close:hover{color:var(--red);}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;color:var(--red);margin-bottom:22px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;padding:9px 13px;background:#fdf5f5;border:1px solid rgba(192,24,42,.2);border-radius:3px;color:var(--text);font-family:'Hind Siliguri',sans-serif;font-size:.93rem;outline:none;transition:border-color .3s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red);}
+.field select option{background:#fff;}
+.field textarea{min-height:76px;resize:vertical;}
+.btn-submit{width:100%;padding:11px;background:linear-gradient(90deg,var(--red-dark),var(--red));border:none;color:#fff;font-family:'Oswald',sans-serif;font-size:.97rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;transition:opacity .3s;margin-top:5px;}
+.btn-submit:hover{opacity:.88;}
+.ok-msg{color:#1a6630;font-size:.83rem;margin-top:7px;font-family:'Oswald',sans-serif;}
+.err-msg{color:var(--red);font-size:.83rem;margin-top:7px;font-family:'Oswald',sans-serif;}
+
+/* ══ IMAGE UPLOAD WIDGET ══ */
+.img-upload-area{
+  border:2px dashed rgba(192,24,42,.3);border-radius:6px;
+  padding:22px;text-align:center;cursor:pointer;
+  transition:border-color .3s,background .3s;position:relative;
+  background:rgba(192,24,42,.04);
+}
+.img-upload-area:hover{border-color:var(--red);background:rgba(192,24,42,.08);}
+.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.img-upload-area .iu-icon{font-size:2rem;margin-bottom:8px;opacity:.55;}
+.img-upload-area .iu-text{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);}
+.img-preview{
+  width:90px;height:90px;border-radius:50%;
+  object-fit:cover;border:3px solid var(--red);
+  margin:0 auto 10px;display:block;
+}
+.img-preview-rect{
+  width:100%;max-height:220px;
+  object-fit:cover;border-radius:4px;
+  border:2px solid rgba(192,24,42,.2);
+  display:block;margin-bottom:10px;
+}
+.btn-remove-img{
+  font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;
+  background:rgba(192,24,42,.08);border:1px solid rgba(192,24,42,.25);
+  color:var(--red);padding:4px 12px;border-radius:2px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-remove-img:hover{background:rgba(192,24,42,.15);}
+
+/* ══ ADMIN PANEL ══ */
+#admin-panel{display:none;position:fixed;inset:0;z-index:950;background:#fdf5f5;overflow-y:auto;}
+#admin-panel.open{display:block;}
+.admin-header{background:linear-gradient(90deg,var(--red-dark),var(--red));border-bottom:2px solid rgba(255,255,255,.2);padding:16px 34px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 16px rgba(192,24,42,.25);}
+.admin-logo{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:3px;color:#fff;}
+.admin-logo span{color:rgba(255,255,255,.75);}
+.admin-body{padding:32px;max-width:980px;margin:0 auto;}
+.admin-tabs{display:flex;gap:6px;margin-bottom:26px;border-bottom:2px solid rgba(192,24,42,.12);padding-bottom:0;flex-wrap:wrap;}
+.tab-btn{font-family:'Oswald',sans-serif;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;background:transparent;border:none;color:rgba(74,21,32,.4);padding:9px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .3s;}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-btn:hover{color:var(--text);}
+.tab-pane{display:none;animation:fadeIn .28s ease;}
+.tab-pane.active{display:block;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.admin-table{width:100%;border-collapse:collapse;margin-top:16px;}
+.admin-table th{font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--red);border-bottom:2px solid rgba(192,24,42,.15);padding:9px 13px;text-align:left;}
+.admin-table td{padding:11px 13px;border-bottom:1px solid rgba(192,24,42,.07);font-size:.88rem;color:var(--text-mid);vertical-align:middle;}
+.admin-table tr:hover td{background:rgba(192,24,42,.04);}
+.btn-add{font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,var(--red-dark),var(--red));border:none;color:#fff;padding:8px 18px;border-radius:2px;cursor:pointer;font-weight:700;margin-bottom:14px;transition:opacity .3s;}
+.btn-add:hover{opacity:.85;}
+.btn-del{background:#ffeaea;border:1px solid rgba(192,24,42,.2);color:var(--red);padding:4px 9px;border-radius:2px;cursor:pointer;font-size:.76rem;font-family:'Oswald',sans-serif;letter-spacing:1px;transition:background .2s;}
+.btn-del:hover{background:rgba(192,24,42,.15);}
+.btn-edit{background:rgba(192,24,42,.08);border:1px solid rgba(192,24,42,.15);color:var(--red);padding:4px 9px;border-radius:2px;cursor:pointer;font-size:.76rem;font-family:'Oswald',sans-serif;letter-spacing:1px;margin-right:5px;transition:background .2s;}
+.btn-edit:hover{background:rgba(192,24,42,.16);}
+.stats-edit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px;}
+.stat-edit-card{background:#fff;border:1px solid rgba(192,24,42,.15);border-radius:4px;padding:16px;box-shadow:0 2px 8px rgba(192,24,42,.05);}
+.stat-edit-card label{display:block;font-family:'Oswald',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.stat-edit-card input{width:100%;padding:7px 11px;background:#fdf5f5;border:1px solid rgba(192,24,42,.2);border-radius:3px;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:1.5rem;text-align:center;outline:none;}
+.contact-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.btn-close-admin{font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;padding:6px 14px;border-radius:2px;cursor:pointer;transition:all .3s;}
+.btn-close-admin:hover{background:rgba(255,255,255,.15);}
+
+/* thumb in table */
+.thumb{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(192,24,42,.2);vertical-align:middle;}
+.thumb-emoji{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--red-light),var(--red-dark));display:inline-flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid rgba(192,24,42,.2);vertical-align:middle;}
+
+/* ══ REVEAL ══ */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s,transform .6s;}
+.reveal.vis{opacity:1;transform:none;}
+
+/* ══ SECTION BG ALTERNATION ══ */
+#about{background:var(--off-white);}
+#players{background:#fff;}
+#fixtures{background:var(--off-white);}
+#contact{background:#fff;}
+
+/* ══ MOBILE ══ */
+@media(max-width:768px){
+  nav{padding:10px 14px;}
+  .nav-links{display:none;}
+  .sec{padding:50px 16px;}
+  .about-grid,.contact-grid,.contact-edit-grid{grid-template-columns:1fr;}
+  .admin-body{padding:18px 14px;}
+  .stats-strip{gap:22px;padding:15px 18px;}
+  .fix-card{grid-template-columns:1fr;text-align:center;}
+  .ft.h,.ft.a{text-align:center;}
+  #team-photo-section{min-height:300px;}
+  #sliderAdminGrid{grid-template-columns:repeat(2,1fr) !important;}
+  .slider-arrow{width:36px;height:36px;font-size:1rem;}
+  .slider-arrow.prev{left:10px;}
+  .slider-arrow.next{right:10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">YOUNG<span>STAR</span> FC</div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about" data-en="About" data-bn="সম্পর্কে">About</a></li>
+      <li><a href="#players" data-en="Squad" data-bn="খেলোয়াড়">Squad</a></li>
+      <li><a href="#fixtures" data-en="Fixtures" data-bn="ম্যাচ">Fixtures</a></li>
+      <li><a href="#contact" data-en="Contact" data-bn="যোগাযোগ">Contact</a></li>
+    </ul>
+    <button class="btn-lang" id="langBtn" onclick="toggleLang()">বাংলা</button>
+    <button class="btn-admin" id="adminBtn" onclick="openAdminLogin()">⚙ Admin</button>
+  </div>
+</nav>
+
+<!-- HERO WITH SLIDER -->
+<div class="hero" id="heroSection">
+  <!-- Slider track -->
+  <div class="hero-slider" id="heroSlider"></div>
+  <!-- Circle decoration -->
+  <div class="hero-circle"></div>
+  <!-- Arrows -->
+  <button class="slider-arrow prev" onclick="sliderPrev()" aria-label="Previous">&#8592;</button>
+  <button class="slider-arrow next" onclick="sliderNext()" aria-label="Next">&#8594;</button>
+  <!-- Dots -->
+  <div class="slider-dots" id="sliderDots"></div>
+  <!-- Counter -->
+  <div class="slide-counter" id="slideCounter">1 / 5</div>
+  <!-- Content (on top) -->
+  <div class="hero-content">
+    <div class="star-row">★ ★ ★</div>
+    <h1>YOUNG<br><span class="g">STAR</span></h1>
+    <div class="hero-sub" data-en="Football Club" data-bn="ফুটবল ক্লাব">Football Club</div>
+    <div class="est-pill">⚽ &nbsp; EST. 2013 &nbsp; ⚽</div>
+  </div>
+</div>
+
+<!-- STATS STRIP -->
+<div class="stats-strip" id="statsStrip"></div>
+
+<!-- TEAM PHOTO SECTION -->
+<div id="team-photo-section">
+  <div id="team-photo-bg"></div>
+  <div class="team-photo-content" id="teamPhotoContent">
+    <!-- rendered by JS -->
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <div class="stag" data-en="About Us" data-bn="আমাদের সম্পর্কে">About Us</div>
+      <h2 class="stitle">YOUNG STAR FC</h2>
+      <div class="gline"></div>
+      <div id="aboutText"></div>
+    </div>
+    <div class="shield-wrap">
+      <div class="shield">
+        <div class="shield-txt">YSFC</div>
+        <div class="shield-yr">EST · 2013</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section class="sec" id="players">
+  <div class="stag" data-en="Squad" data-bn="দল">Squad</div>
+  <h2 class="stitle reveal" data-en="Our Players" data-bn="আমাদের খেলোয়াড়">Our Players</h2>
+  <div class="gline"></div>
+  <div class="players-grid" id="playersGrid"></div>
+</section>
+
+<!-- FIXTURES -->
+<section class="sec" id="fixtures">
+  <div class="stag" data-en="Match Schedule" data-bn="ম্যাচ সূচি">Match Schedule</div>
+  <h2 class="stitle reveal" data-en="Fixtures & Results" data-bn="ফিক্সচার ও ফলাফল">Fixtures &amp; Results</h2>
+  <div class="gline"></div>
+  <div class="fix-list" id="fixturesList"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact">
+  <div class="stag" data-en="Get In Touch" data-bn="যোগাযোগ করুন">Get In Touch</div>
+  <h2 class="stitle reveal" data-en="Contact Us" data-bn="আমাদের সাথে থাকুন">Contact Us</h2>
+  <div class="gline"></div>
+  <div class="contact-grid reveal" id="contactSection"></div>
+</section>
+
+<footer>
+  <div class="f-logo">⭐ YOUNG STAR FC ⭐</div>
+  <div class="f-copy">EST. 2013 · DHAKA, BANGLADESH · ALL RIGHTS RESERVED</div>
+</footer>
+
+<!-- ══ ADMIN LOGIN MODAL ══ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <div class="modal-title">Admin Login</div>
+    <div class="field"><label>Username</label><input type="text" id="loginUser" placeholder="admin"></div>
+    <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+    <div id="loginErr" class="err-msg"></div>
+    <button class="btn-submit" onclick="doLogin()">LOGIN</button>
+    <div style="margin-top:12px;font-size:.76rem;color:rgba(240,244,255,.3);text-align:center;font-family:'Oswald',sans-serif;letter-spacing:1px;">Default: admin / youngstar2013</div>
+  </div>
+</div>
+
+<!-- ══ PLAYER MODAL ══ -->
+<div class="modal-overlay" id="playerModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('playerModal')">✕</button>
+    <div class="modal-title" id="playerModalTitle">Add Player</div>
+    <input type="hidden" id="editPlayerId">
+
+    <!-- Player photo upload -->
+    <div class="field">
+      <label>Player Photo</label>
+      <div id="playerPhotoPreviewWrap" style="display:none;margin-bottom:10px;">
+        <img id="playerPhotoPreview" class="img-preview" src="" alt="preview">
+        <div style="text-align:center;"><button class="btn-remove-img" onclick="removePlayerPhoto()">✕ Remove Photo</button></div>
+      </div>
+      <div class="img-upload-area" id="playerUploadArea">
+        <input type="file" accept="image/*" onchange="handlePlayerPhoto(this)">
+        <div class="iu-icon">📷</div>
+        <div class="iu-text">Click to upload photo<br><span style="font-size:.65rem;opacity:.6">JPG, PNG · max 5MB</span></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+      <div class="field"><label>Name (EN)</label><input id="pNameEn" placeholder="John Smith"></div>
+      <div class="field"><label>নাম (BN)</label><input id="pNameBn" placeholder="জন স্মিথ"></div>
+      <div class="field"><label>Position (EN)</label><input id="pPosEn" placeholder="Striker"></div>
+      <div class="field"><label>পজিশন (BN)</label><input id="pPosBn" placeholder="স্ট্রাইকার"></div>
+      <div class="field"><label>Jersey #</label><input id="pNum" type="number" placeholder="9"></div>
+      <div class="field"><label>Age / বয়স</label><input id="pAge" type="number" placeholder="21"></div>
+    </div>
+    <div class="field">
+      <label>Fallback Icon (if no photo)</label>
+      <select id="pEmoji">
+        <option value="⚽">⚽ Outfield</option>
+        <option value="🧤">🧤 Goalkeeper</option>
+        <option value="🛡️">🛡️ Defender</option>
+        <option value="⚙️">⚙️ Midfielder</option>
+        <option value="🏃">🏃 Winger</option>
+        <option value="⭐">⭐ Captain</option>
+        <option value="🔧">🔧 Def. Mid</option>
+      </select>
+    </div>
+    <div class="field"><label>Note (EN)</label><input id="pNote" placeholder="Captain, Top scorer..."></div>
+    <button class="btn-submit" onclick="savePlayer()">SAVE PLAYER</button>
+  </div>
+</div>
+
+<!-- ══ FIXTURE MODAL ══ -->
+<div class="modal-overlay" id="fixtureModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('fixtureModal')">✕</button>
+    <div class="modal-title" id="fixtureModalTitle">Add Fixture</div>
+    <input type="hidden" id="editFixtureId">
+    <div class="field"><label>Home Team (EN)</label><input id="fHomeEn" placeholder="Young Star FC"></div>
+    <div class="field"><label>Away Team (EN)</label><input id="fAwayEn" placeholder="Opponent FC"></div>
+    <div class="field"><label>Home Team (BN)</label><input id="fHomeBn" placeholder="ইয়াং স্টার এফসি"></div>
+    <div class="field"><label>Away Team (BN)</label><input id="fAwayBn" placeholder="প্রতিপক্ষ এফসি"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+      <div class="field"><label>Date</label><input id="fDate" type="date"></div>
+      <div class="field"><label>Result</label>
+        <select id="fResult">
+          <option value="upcoming">Upcoming</option>
+          <option value="win">Win</option>
+          <option value="draw">Draw</option>
+          <option value="loss">Loss</option>
+        </select>
+      </div>
+      <div class="field"><label>Score (e.g. 2-1)</label><input id="fScore" placeholder="2 – 1"></div>
+      <div class="field"><label>Venue</label><input id="fVenue" placeholder="Home / Away"></div>
+    </div>
+    <button class="btn-submit" onclick="saveFixture()">SAVE FIXTURE</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ══ -->
+<div id="admin-panel">
+  <div class="admin-header">
+    <div class="admin-logo">⚽ ADMIN <span>PANEL</span></div>
+    <div style="display:flex;gap:9px;align-items:center;">
+      <span style="font-family:'Oswald',sans-serif;font-size:.76rem;color:rgba(240,244,255,.38);letter-spacing:1px;">Logged in as Admin</span>
+      <button class="btn-close-admin" onclick="logoutAdmin()">Logout</button>
+      <button class="btn-close-admin" onclick="closeAdmin()">✕ Close</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-tabs">
+      <button class="tab-btn active" onclick="showTab(event,'tab-players')">👥 Players</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-fixtures')">📅 Fixtures</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-slider')">🖼 Slider</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-teamphoto')">📸 Team Photo</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-stats')">📊 Stats</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-contact')">📞 Contact</button>
+      <button class="tab-btn" onclick="showTab(event,'tab-about')">ℹ About</button>
+    </div>
+
+    <!-- PLAYERS -->
+    <div class="tab-pane active" id="tab-players">
+      <button class="btn-add" onclick="openAddPlayer()">+ Add Player</button>
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>Photo</th><th>Name</th><th>Position</th><th>Age</th><th>Actions</th></tr></thead>
+        <tbody id="adminPlayersBody"></tbody>
+      </table>
+    </div>
+
+    <!-- FIXTURES -->
+    <div class="tab-pane" id="tab-fixtures">
+      <button class="btn-add" onclick="openAddFixture()">+ Add Fixture</button>
+      <table class="admin-table">
+        <thead><tr><th>Date</th><th>Home</th><th>Score</th><th>Away</th><th>Result</th><th>Actions</th></tr></thead>
+        <tbody id="adminFixturesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- HERO SLIDER -->
+    <div class="tab-pane" id="tab-slider">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:var(--red);">Hero Slider Images</div>
+          <div style="font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;color:var(--text-light);text-transform:uppercase;margin-top:2px;">5 background images · Auto-rotate on homepage</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-family:'Oswald',sans-serif;font-size:.72rem;letter-spacing:2px;color:var(--red);text-transform:uppercase;">Auto-rotate every</span>
+          <input id="sliderInterval" type="number" min="2" max="30" value="5" style="width:60px;padding:6px 8px;background:#fdf5f5;border:1.5px solid rgba(192,24,42,.25);border-radius:3px;color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:1.2rem;text-align:center;outline:none;">
+          <span style="font-family:'Oswald',sans-serif;font-size:.72rem;color:var(--text-light);">sec</span>
+          <button class="btn-add" style="margin:0;padding:7px 16px;" onclick="saveSliderSettings()">Save</button>
+        </div>
+      </div>
+      <div id="sliderAdminGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;"></div>
+      <div style="margin-top:14px;font-family:'Oswald',sans-serif;font-size:.68rem;letter-spacing:1px;color:rgba(74,21,32,.3);text-transform:uppercase;">Tip: 1600x900px recommended · JPG or PNG · Empty slides show gradient background</div>
+      <div id="sliderAdminMsg" style="margin-top:8px;"></div>
+    </div>
+
+    <!-- TEAM PHOTO -->
+    <div class="tab-pane" id="tab-teamphoto">
+      <div style="margin-bottom:18px;font-family:'Oswald',sans-serif;font-size:.8rem;letter-spacing:2px;color:rgba(240,244,255,.4);text-transform:uppercase;">Team Photo — shown as website background section</div>
+
+      <!-- Current preview -->
+      <div id="teamPhotoAdminPreview" style="margin-bottom:18px;"></div>
+
+      <!-- Upload -->
+      <div class="field" style="max-width:520px;">
+        <label>Upload Team Photo</label>
+        <div class="img-upload-area" style="padding:30px;">
+          <input type="file" accept="image/*" onchange="handleTeamPhoto(this)">
+          <div class="iu-icon">🖼️</div>
+          <div class="iu-text">Click or drag to upload<br><span style="font-size:.64rem;opacity:.55">JPG, PNG · Recommended: 1400×700px</span></div>
+        </div>
+      </div>
+
+      <!-- Caption -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin-top:6px;">
+        <div class="field"><label>Caption (EN)</label><input id="tpCaptionEn" placeholder="Our Team 2026"></div>
+        <div class="field"><label>Caption (BN)</label><input id="tpCaptionBn" placeholder="আমাদের দল ২০২৬"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
+        <button class="btn-submit" style="max-width:180px;" onclick="saveTeamPhotoMeta()">SAVE CAPTION</button>
+        <button class="btn-del" style="padding:10px 18px;" onclick="removeTeamPhoto()">✕ Remove Photo</button>
+      </div>
+      <div id="teamPhotoMsg"></div>
+    </div>
+
+    <!-- STATS -->
+    <div class="tab-pane" id="tab-stats">
+      <div style="margin-bottom:18px;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;color:rgba(240,244,255,.4);text-transform:uppercase;">Edit stats shown in the gold strip</div>
+      <div class="stats-edit-grid" id="statsEditGrid"></div>
+      <button class="btn-submit" style="max-width:190px;margin-top:18px;" onclick="saveStats()">SAVE STATS</button>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="tab-pane" id="tab-contact">
+      <div style="margin-bottom:14px;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;color:rgba(240,244,255,.4);text-transform:uppercase;">Edit contact information</div>
+      <div class="contact-edit-grid">
+        <div class="field"><label>Address (EN)</label><input id="cAddrEn"></div>
+        <div class="field"><label>ঠিকানা (BN)</label><input id="cAddrBn"></div>
+        <div class="field"><label>Phone</label><input id="cPhone"></div>
+        <div class="field"><label>Email</label><input id="cEmail"></div>
+        <div class="field"><label>Training Time (EN)</label><input id="cTrainEn"></div>
+        <div class="field"><label>প্রশিক্ষণ সময় (BN)</label><input id="cTrainBn"></div>
+        <div class="field"><label>Facebook URL</label><input id="cFb"></div>
+        <div class="field"><label>Instagram URL</label><input id="cIg"></div>
+      </div>
+      <button class="btn-submit" style="max-width:190px;margin-top:6px;" onclick="saveContact()">SAVE CONTACT</button>
+      <div id="contactSaveMsg"></div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="tab-pane" id="tab-about">
+      <div style="margin-bottom:14px;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:2px;color:rgba(240,244,255,.4);text-transform:uppercase;">Edit About section text</div>
+      <div class="field"><label>Paragraph 1 (EN)</label><textarea id="aP1En"></textarea></div>
+      <div class="field"><label>Paragraph 1 (BN)</label><textarea id="aP1Bn"></textarea></div>
+      <div class="field"><label>Paragraph 2 (EN)</label><textarea id="aP2En"></textarea></div>
+      <div class="field"><label>Paragraph 2 (BN)</label><textarea id="aP2Bn"></textarea></div>
+      <div class="field"><label>Paragraph 3 (EN)</label><textarea id="aP3En"></textarea></div>
+      <div class="field"><label>Paragraph 3 (BN)</label><textarea id="aP3Bn"></textarea></div>
+      <button class="btn-submit" style="max-width:190px;" onclick="saveAbout()">SAVE ABOUT</button>
+      <div id="aboutSaveMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════ DEFAULTS ══════════════ */
+const DEFAULT = {
+  players:[
+    {id:1,num:1,emoji:'🧤',photo:'',nameEn:'Rakib Hasan',nameBn:'রাকিব হাসান',posEn:'Goalkeeper',posBn:'গোলরক্ষক',age:22,note:''},
+    {id:2,num:5,emoji:'🛡️',photo:'',nameEn:'Tanvir Ahmed',nameBn:'তানভীর আহমেদ',posEn:'Defender',posBn:'ডিফেন্ডার',age:24,note:''},
+    {id:3,num:6,emoji:'🛡️',photo:'',nameEn:'Sakib Rahman',nameBn:'সাকিব রহমান',posEn:'Defender',posBn:'ডিফেন্ডার',age:21,note:''},
+    {id:4,num:8,emoji:'⚙️',photo:'',nameEn:'Imran Hossain',nameBn:'ইমরান হোসেন',posEn:'Midfielder',posBn:'মিডফিল্ডার',age:23,note:''},
+    {id:5,num:10,emoji:'⭐',photo:'',nameEn:'Arif Khan',nameBn:'আরিফ খান',posEn:'Attacking Mid',posBn:'অ্যাটাকিং মিড',age:20,note:'Captain'},
+    {id:6,num:9,emoji:'⚽',photo:'',nameEn:'Nafis Uddin',nameBn:'নাফিস উদ্দিন',posEn:'Striker',posBn:'স্ট্রাইকার',age:22,note:''},
+    {id:7,num:11,emoji:'🏃',photo:'',nameEn:'Riyad Hasan',nameBn:'রিয়াদ হাসান',posEn:'Winger',posBn:'উইঙ্গার',age:19,note:''},
+    {id:8,num:4,emoji:'🔧',photo:'',nameEn:'Shahin Mia',nameBn:'শাহীন মিয়া',posEn:'Def. Midfielder',posBn:'ডিফেন্সিভ মিড',age:25,note:''},
+  ],
+  fixtures:[
+    {id:1,homeEn:'Young Star FC',homeBn:'ইয়াং স্টার এফসি',awayEn:'City Strikers FC',awayBn:'সিটি স্ট্রাইকার্স',date:'2026-04-10',score:'3 – 1',result:'win',venue:'Home'},
+    {id:2,homeEn:'Blue Eagles FC',homeBn:'ব্লু ঈগলস',awayEn:'Young Star FC',awayBn:'ইয়াং স্টার এফসি',date:'2026-04-03',score:'1 – 1',result:'draw',venue:'Away'},
+    {id:3,homeEn:'Young Star FC',homeBn:'ইয়াং স্টার এফসি',awayEn:'Thunder United',awayBn:'থান্ডার ইউনাইটেড',date:'2026-03-27',score:'0 – 2',result:'loss',venue:'Home'},
+    {id:4,homeEn:'Young Star FC',homeBn:'ইয়াং স্টার এফসি',awayEn:'Green Rovers FC',awayBn:'গ্রিন রোভার্স',date:'2026-04-25',score:'VS',result:'upcoming',venue:'Home'},
+  ],
+  stats:[
+    {keyEn:'Years Active',keyBn:'বছরের অভিজ্ঞতা',val:'12+'},
+    {keyEn:'Active Players',keyBn:'সক্রিয় খেলোয়াড়',val:'25'},
+    {keyEn:'Trophies',keyBn:'ট্রফি',val:'8'},
+    {keyEn:'Total Matches',keyBn:'মোট ম্যাচ',val:'150+'},
+  ],
+  contact:{addrEn:'Local Football Ground, Dhaka, Bangladesh',addrBn:'স্থানীয় ফুটবল মাঠ, ঢাকা, বাংলাদেশ',phone:'+880 1XXX-XXXXXX',email:'youngstarfc2013@gmail.com',trainEn:'Fri–Sat, 4:00 PM – 6:00 PM',trainBn:'শুক্র–শনি, বিকাল ৪টা – সন্ধ্যা ৬টা',fb:'#',ig:'#'},
+  about:{p1En:'Young Star FC was founded in 2013 — a young and rising football club composed of talented local players.',p1Bn:'Young Star FC ২০১৩ সালে প্রতিষ্ঠিত হয়েছিল। এটি একটি তরুণ এবং উদীয়মান ফুটবল ক্লাব যা স্থানীয় প্রতিভাবান খেলোয়াড়দের নিয়ে গঠিত।',p2En:'Our goal is to develop local football talent and build a strong team spirit. We don\'t just play football — we are a family.',p2Bn:'আমাদের লক্ষ্য হলো স্থানীয় ফুটবল প্রতিভা বিকাশ করা এবং দলগত ক্রীড়ামনোভাব তৈরি করা। আমরা শুধু ফুটবলই খেলি না — আমরা একটি পরিবার।',p3En:'Through training, dedication and teamwork, we grow stronger with every season.',p3Bn:'প্রশিক্ষণ, নিষ্ঠা এবং দলগত কাজের মাধ্যমে আমরা প্রতিটি মৌসুমে আরও শক্তিশালী হচ্ছি।'},
+  teamPhoto:{img:'',captionEn:'Our Team · 2026',captionBn:'আমাদের দল · ২০২৬'},
+  slider:{images:['','','','',''],interval:5}
+};
+
+/* ══ STATE ══ */
+let lang='en', loggedIn=false;
+let players=[], fixtures=[], stats=[], contact={}, about={}, teamPhoto={}, sliderData={};
+let pendingPlayerPhoto=''; // temp base64 while editing
+
+// Slider runtime
+let sliderIdx=0, sliderTimer=null, sliderTotal=5;
+
+/* ══ STORAGE ══ */
+async function load(key){
+  try{ const r=await window.storage.get(key); return r?JSON.parse(r.value):null; }
+  catch{ return null; }
+}
+async function save(key,val){
+  try{ await window.storage.set(key,JSON.stringify(val)); }
+  catch(e){ console.warn('storage err',e); }
+}
+
+/* ══ IMAGE COMPRESS ══ */
+function compressImage(file, maxW, maxH, quality=0.82){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+        if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',quality));
+      };
+      img.onerror=rej;
+      img.src=e.target.result;
+    };
+    reader.onerror=rej;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ══ INIT ══ */
+async function init(){
+  players=(await load('ysfc_players'))||JSON.parse(JSON.stringify(DEFAULT.players));
+  fixtures=(await load('ysfc_fixtures'))||JSON.parse(JSON.stringify(DEFAULT.fixtures));
+  stats=(await load('ysfc_stats'))||JSON.parse(JSON.stringify(DEFAULT.stats));
+  contact=(await load('ysfc_contact'))||JSON.parse(JSON.stringify(DEFAULT.contact));
+  about=(await load('ysfc_about'))||JSON.parse(JSON.stringify(DEFAULT.about));
+  teamPhoto=(await load('ysfc_teamphoto'))||JSON.parse(JSON.stringify(DEFAULT.teamPhoto));
+  sliderData=(await load('ysfc_slider'))||JSON.parse(JSON.stringify(DEFAULT.slider));
+  render(); setupReveal();
+}
+
+/* ══ RENDER ALL ══ */
+function render(){renderStats();renderSlider();renderTeamPhoto();renderPlayers();renderFixtures();renderContact();renderAbout();}
+
+/* ══ HERO SLIDER ══ */
+function renderSlider(){
+  const imgs = sliderData.images || ['','','','',''];
+  sliderTotal = 5;
+  const track = document.getElementById('heroSlider');
+  const dotsEl = document.getElementById('sliderDots');
+
+  // Build slides
+  track.innerHTML = imgs.map((img,i)=>{
+    if(img){
+      return `<div class="hero-slide has-image" style="background-image:url(${img})"></div>`;
+    }
+    return `<div class="hero-slide default-slide"></div>`;
+  }).join('');
+
+  // Build dots
+  dotsEl.innerHTML = imgs.map((_,i)=>
+    `<div class="s-dot${i===sliderIdx?' active':''}" onclick="goSlide(${i})"></div>`
+  ).join('');
+
+  updateSliderUI();
+  startSliderTimer();
+}
+
+function updateSliderUI(){
+  const track=document.getElementById('heroSlider');
+  track.style.transform=`translateX(-${sliderIdx*100}%)`;
+  document.querySelectorAll('.s-dot').forEach((d,i)=>d.classList.toggle('active',i===sliderIdx));
+  document.getElementById('slideCounter').textContent=`${sliderIdx+1} / ${sliderTotal}`;
+}
+
+function goSlide(i){
+  sliderIdx=((i%sliderTotal)+sliderTotal)%sliderTotal;
+  updateSliderUI();
+  resetSliderTimer();
+}
+function sliderPrev(){ goSlide(sliderIdx-1); }
+function sliderNext(){ goSlide(sliderIdx+1); }
+
+function startSliderTimer(){
+  clearInterval(sliderTimer);
+  const sec = (sliderData.interval||5)*1000;
+  sliderTimer = setInterval(()=>goSlide(sliderIdx+1), sec);
+}
+function resetSliderTimer(){ startSliderTimer(); }
+
+/* Stats strip */
+function renderStats(){
+  document.getElementById('statsStrip').innerHTML=stats.map(s=>`
+    <div class="stat">
+      <div class="stat-num">${s.val}</div>
+      <div class="stat-label">${lang==='en'?s.keyEn:s.keyBn}</div>
+    </div>`).join('');
+}
+
+/* Team Photo Section */
+function renderTeamPhoto(){
+  const bg=document.getElementById('team-photo-bg');
+  const content=document.getElementById('teamPhotoContent');
+  if(teamPhoto.img){
+    bg.style.backgroundImage=`url(${teamPhoto.img})`;
+    bg.style.backgroundSize='cover';
+    bg.style.backgroundPosition='center';
+    content.innerHTML=`
+      <div class="team-photo-title">⭐ <span class="g">YOUNG STAR</span> FC ⭐</div>
+      <div class="team-photo-sub">${lang==='en'?teamPhoto.captionEn:teamPhoto.captionBn}</div>`;
+  } else {
+    bg.style.backgroundImage='none';
+    content.innerHTML=`
+      <div class="team-photo-empty">
+        <div class="icon">📸</div>
+        <p>${lang==='en'?'Team photo will appear here':'দলের ছবি এখানে দেখাবে'}</p>
+        <p style="margin-top:6px;font-size:.65rem;">${lang==='en'?'Upload from Admin Panel':'অ্যাডমিন প্যানেল থেকে আপলোড করুন'}</p>
+      </div>`;
+  }
+}
+
+/* Players */
+function renderPlayers(){
+  const sorted=[...players].sort((a,b)=>a.num-b.num);
+  document.getElementById('playersGrid').innerHTML=sorted.map(p=>`
+    <div class="pc reveal">
+      <div class="pc-num">${p.num}</div>
+      <div class="pc-ava">
+        ${p.photo
+          ? `<img src="${p.photo}" alt="${p.nameEn}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+          : p.emoji}
+      </div>
+      <div class="pc-name">${lang==='en'?p.nameEn:p.nameBn}</div>
+      <div class="pc-pos">${lang==='en'?p.posEn:p.posBn}</div>
+      <div class="pc-age">${lang==='en'?'Age '+p.age:'বয়স '+p.age}${p.note?' · '+p.note:''}</div>
+    </div>`).join('');
+  setupReveal();
+}
+
+/* Fixtures */
+const RM={win:{c:'bw',en:'WIN',bn:'জয়'},draw:{c:'bd',en:'DRAW',bn:'ড্র'},loss:{c:'bl',en:'LOSS',bn:'পরাজয়'},upcoming:{c:'bu',en:'UPCOMING',bn:'আসন্ন'}};
+function renderFixtures(){
+  const sorted=[...fixtures].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('fixturesList').innerHTML=sorted.map(f=>{
+    const r=RM[f.result]||RM.upcoming;
+    const d=new Date(f.date);
+    const ds=d.toLocaleDateString(lang==='en'?'en-GB':'bn-BD',{day:'numeric',month:'long',year:'numeric'});
+    return `<div class="fix-card reveal">
+      <div class="ft h">${lang==='en'?f.homeEn:f.homeBn}<div class="fmeta">${lang==='en'?f.venue:(f.venue==='Home'?'হোম':'অ্যাওয়ে')}</div></div>
+      <div class="fvs">${f.score}<br><span class="badge ${r.c}">${lang==='en'?r.en:r.bn}</span></div>
+      <div class="ft a">${lang==='en'?f.awayEn:f.awayBn}<div class="fmeta">${ds}</div></div>
+    </div>`;
+  }).join('');
+  setupReveal();
+}
+
+/* Contact */
+function renderContact(){
+  const c=contact;
+  document.getElementById('contactSection').innerHTML=`
+    <div class="c-info">
+      <div class="c-item"><div class="c-ico">📍</div><div><div class="c-lbl">${lang==='en'?'Address':'ঠিকানা'}</div><div class="c-val">${lang==='en'?c.addrEn:c.addrBn}</div></div></div>
+      <div class="c-item"><div class="c-ico">📞</div><div><div class="c-lbl">${lang==='en'?'Phone':'ফোন'}</div><div class="c-val">${c.phone}</div></div></div>
+      <div class="c-item"><div class="c-ico">✉️</div><div><div class="c-lbl">${lang==='en'?'Email':'ইমেইল'}</div><div class="c-val">${c.email}</div></div></div>
+      <div class="c-item"><div class="c-ico">🕐</div><div><div class="c-lbl">${lang==='en'?'Training Time':'প্রশিক্ষণের সময়'}</div><div class="c-val">${lang==='en'?c.trainEn:c.trainBn}</div></div></div>
+    </div>
+    <div>
+      <div class="stag" style="margin-bottom:13px;">${lang==='en'?'Social Media':'সোশ্যাল মিডিয়া'}</div>
+      <div class="social-links">
+        <a class="s-btn" href="${c.fb}" target="_blank">📘 &nbsp; Facebook Page</a>
+        <a class="s-btn" href="${c.ig}" target="_blank">📸 &nbsp; Instagram</a>
+        <a class="s-btn" href="#">▶️ &nbsp; YouTube Channel</a>
+        <a class="s-btn" href="#">💬 &nbsp; WhatsApp Group</a>
+      </div>
+    </div>`;
+}
+
+/* About */
+function renderAbout(){
+  const a=about;
+  document.getElementById('aboutText').innerHTML=`
+    <p>${lang==='en'?a.p1En:a.p1Bn}</p>
+    <p>${lang==='en'?a.p2En:a.p2Bn}</p>
+    <p>${lang==='en'?a.p3En:a.p3Bn}</p>`;
+}
+
+/* ══ LANGUAGE ══ */
+function toggleLang(){
+  lang=lang==='en'?'bn':'en';
+  document.getElementById('langBtn').textContent=lang==='en'?'বাংলা':'English';
+  document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=lang==='en'?el.dataset.en:el.dataset.bn;});
+  render();
+}
+
+/* ══ ADMIN AUTH ══ */
+function openAdminLogin(){if(loggedIn){openAdmin();return;}openModal('loginModal');}
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  if(u==='admin'&&p==='youngstar2013'){
+    loggedIn=true;
+    document.getElementById('adminBtn').textContent='⚙ Dashboard';
+    document.getElementById('adminBtn').classList.add('logged');
+    closeModal('loginModal');openAdmin();
+  } else {
+    document.getElementById('loginErr').textContent='❌ Invalid credentials';
+  }
+}
+function logoutAdmin(){loggedIn=false;document.getElementById('adminBtn').textContent='⚙ Admin';document.getElementById('adminBtn').classList.remove('logged');closeAdmin();}
+function openAdmin(){document.getElementById('admin-panel').classList.add('open');loadAdminData();}
+function closeAdmin(){document.getElementById('admin-panel').classList.remove('open');}
+function loadAdminData(){renderAdminPlayers();renderAdminFixtures();renderAdminSlider();renderAdminStats();renderAdminContact();renderAdminAbout();renderAdminTeamPhoto();}
+
+/* ══ TABS ══ */
+function showTab(e,id){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  e.target.classList.add('active');
+}
+
+/* ══ PLAYER IMAGE HANDLING ══ */
+async function handlePlayerPhoto(input){
+  const file=input.files[0];if(!file)return;
+  try{
+    const b64=await compressImage(file,320,320,0.85);
+    pendingPlayerPhoto=b64;
+    document.getElementById('playerPhotoPreview').src=b64;
+    document.getElementById('playerPhotoPreviewWrap').style.display='block';
+    document.getElementById('playerUploadArea').style.display='none';
+  }catch(e){alert('Could not process image.');}
+}
+function removePlayerPhoto(){
+  pendingPlayerPhoto='';
+  document.getElementById('playerPhotoPreview').src='';
+  document.getElementById('playerPhotoPreviewWrap').style.display='none';
+  document.getElementById('playerUploadArea').style.display='block';
+}
+
+/* ══ ADMIN PLAYERS ══ */
+function renderAdminPlayers(){
+  document.getElementById('adminPlayersBody').innerHTML=players.map(p=>`
+    <tr>
+      <td><b>#${p.num}</b></td>
+      <td>${p.photo
+        ?`<img class="thumb" src="${p.photo}" alt="">`
+        :`<div class="thumb-emoji">${p.emoji}</div>`}</td>
+      <td>${p.nameEn}<br><small style="color:rgba(240,244,255,.38)">${p.nameBn}</small></td>
+      <td>${p.posEn}</td>
+      <td>${p.age}</td>
+      <td>
+        <button class="btn-edit" onclick="openEditPlayer(${p.id})">Edit</button>
+        <button class="btn-del" onclick="deletePlayer(${p.id})">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+function openAddPlayer(){
+  document.getElementById('playerModalTitle').textContent='Add Player';
+  document.getElementById('editPlayerId').value='';
+  ['pNameEn','pNameBn','pPosEn','pPosBn','pNum','pAge','pNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pEmoji').value='⚽';
+  pendingPlayerPhoto='';
+  document.getElementById('playerPhotoPreviewWrap').style.display='none';
+  document.getElementById('playerUploadArea').style.display='block';
+  openModal('playerModal');
+}
+function openEditPlayer(id){
+  const p=players.find(x=>x.id===id);if(!p)return;
+  document.getElementById('playerModalTitle').textContent='Edit Player';
+  document.getElementById('editPlayerId').value=id;
+  document.getElementById('pNameEn').value=p.nameEn;
+  document.getElementById('pNameBn').value=p.nameBn;
+  document.getElementById('pPosEn').value=p.posEn;
+  document.getElementById('pPosBn').value=p.posBn;
+  document.getElementById('pNum').value=p.num;
+  document.getElementById('pAge').value=p.age;
+  document.getElementById('pEmoji').value=p.emoji;
+  document.getElementById('pNote').value=p.note||'';
+  pendingPlayerPhoto=p.photo||'';
+  if(p.photo){
+    document.getElementById('playerPhotoPreview').src=p.photo;
+    document.getElementById('playerPhotoPreviewWrap').style.display='block';
+    document.getElementById('playerUploadArea').style.display='none';
+  } else {
+    document.getElementById('playerPhotoPreviewWrap').style.display='none';
+    document.getElementById('playerUploadArea').style.display='block';
+  }
+  openModal('playerModal');
+}
+async function savePlayer(){
+  const eid=document.getElementById('editPlayerId').value;
+  const p={
+    id:eid?parseInt(eid):Date.now(),
+    num:parseInt(document.getElementById('pNum').value)||0,
+    emoji:document.getElementById('pEmoji').value,
+    photo:pendingPlayerPhoto,
+    nameEn:document.getElementById('pNameEn').value.trim(),
+    nameBn:document.getElementById('pNameBn').value.trim(),
+    posEn:document.getElementById('pPosEn').value.trim(),
+    posBn:document.getElementById('pPosBn').value.trim(),
+    age:parseInt(document.getElementById('pAge').value)||0,
+    note:document.getElementById('pNote').value.trim()
+  };
+  if(!p.nameEn){alert('Name (EN) required');return;}
+  if(eid){const i=players.findIndex(x=>x.id===parseInt(eid));players[i]=p;}
+  else players.push(p);
+  await save('ysfc_players',players);
+  closeModal('playerModal');
+  renderAdminPlayers();renderPlayers();
+}
+async function deletePlayer(id){
+  if(!confirm('Delete this player?'))return;
+  players=players.filter(p=>p.id!==id);
+  await save('ysfc_players',players);
+  renderAdminPlayers();renderPlayers();
+}
+
+/* ══ ADMIN FIXTURES ══ */
+function renderAdminFixtures(){
+  document.getElementById('adminFixturesBody').innerHTML=fixtures.map(f=>`
+    <tr>
+      <td>${f.date}</td>
+      <td>${f.homeEn}</td>
+      <td style="font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:1.1rem;">${f.score}</td>
+      <td>${f.awayEn}</td>
+      <td><span class="badge b${f.result[0]}">${f.result.toUpperCase()}</span></td>
+      <td><button class="btn-edit" onclick="openEditFixture(${f.id})">Edit</button><button class="btn-del" onclick="deleteFixture(${f.id})">Delete</button></td>
+    </tr>`).join('');
+}
+function openAddFixture(){
+  document.getElementById('fixtureModalTitle').textContent='Add Fixture';
+  document.getElementById('editFixtureId').value='';
+  ['fHomeEn','fAwayEn','fHomeBn','fAwayBn','fScore','fVenue'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fResult').value='upcoming';document.getElementById('fDate').value='';
+  openModal('fixtureModal');
+}
+function openEditFixture(id){
+  const f=fixtures.find(x=>x.id===id);if(!f)return;
+  document.getElementById('fixtureModalTitle').textContent='Edit Fixture';
+  document.getElementById('editFixtureId').value=id;
+  document.getElementById('fHomeEn').value=f.homeEn;document.getElementById('fAwayEn').value=f.awayEn;
+  document.getElementById('fHomeBn').value=f.homeBn;document.getElementById('fAwayBn').value=f.awayBn;
+  document.getElementById('fDate').value=f.date;document.getElementById('fScore').value=f.score;
+  document.getElementById('fResult').value=f.result;document.getElementById('fVenue').value=f.venue||'Home';
+  openModal('fixtureModal');
+}
+async function saveFixture(){
+  const eid=document.getElementById('editFixtureId').value;
+  const f={
+    id:eid?parseInt(eid):Date.now(),
+    homeEn:document.getElementById('fHomeEn').value.trim(),awayEn:document.getElementById('fAwayEn').value.trim(),
+    homeBn:document.getElementById('fHomeBn').value.trim(),awayBn:document.getElementById('fAwayBn').value.trim(),
+    date:document.getElementById('fDate').value,
+    score:document.getElementById('fScore').value.trim()||'VS',
+    result:document.getElementById('fResult').value,
+    venue:document.getElementById('fVenue').value.trim()||'Home'
+  };
+  if(!f.homeEn||!f.awayEn){alert('Team names required');return;}
+  if(eid){const i=fixtures.findIndex(x=>x.id===parseInt(eid));fixtures[i]=f;}
+  else fixtures.push(f);
+  await save('ysfc_fixtures',fixtures);
+  closeModal('fixtureModal');renderAdminFixtures();renderFixtures();
+}
+async function deleteFixture(id){
+  if(!confirm('Delete this fixture?'))return;
+  fixtures=fixtures.filter(f=>f.id!==id);
+  await save('ysfc_fixtures',fixtures);renderAdminFixtures();renderFixtures();
+}
+
+/* ══ ADMIN SLIDER ══ */
+function renderAdminSlider(){
+  const imgs = sliderData.images || ['','','','',''];
+  document.getElementById('sliderInterval').value = sliderData.interval || 5;
+
+  document.getElementById('sliderAdminGrid').innerHTML = [0,1,2,3,4].map(i => {
+    const hasImg = !!imgs[i];
+    return `
+    <div style="
+      background:#fff;border:2px solid ${hasImg ? 'var(--red)' : 'rgba(192,24,42,.15)'};
+      border-radius:8px;overflow:hidden;
+      box-shadow:0 2px 12px rgba(192,24,42,.07);
+      display:flex;flex-direction:column;
+    ">
+      <!-- Slot header -->
+      <div style="
+        background:${hasImg ? 'var(--red)' : '#fdf5f5'};
+        padding:8px 12px;
+        display:flex;align-items:center;justify-content:space-between;
+      ">
+        <div style="
+          font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;
+          color:${hasImg ? '#fff' : 'var(--red)'};
+        ">Slide ${i+1}</div>
+        ${hasImg
+          ? `<div style="font-family:'Oswald',sans-serif;font-size:.6rem;letter-spacing:1px;color:rgba(255,255,255,.75);text-transform:uppercase;">✓ Uploaded</div>`
+          : `<div style="font-family:'Oswald',sans-serif;font-size:.6rem;letter-spacing:1px;color:rgba(192,24,42,.4);text-transform:uppercase;">Empty</div>`
+        }
+      </div>
+
+      <!-- Preview area -->
+      <div style="position:relative;flex:1;">
+        ${hasImg
+          ? `<img src="${imgs[i]}" style="width:100%;height:130px;object-fit:cover;display:block;">`
+          : `<div style="
+              width:100%;height:130px;
+              background:linear-gradient(135deg,#fff5f6,#ffeaec);
+              display:flex;flex-direction:column;align-items:center;justify-content:center;
+              gap:6px;
+            ">
+              <div style="font-size:2rem;opacity:.3;">🖼️</div>
+              <div style="font-family:'Oswald',sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(192,24,42,.3);">No image</div>
+            </div>`
+        }
+      </div>
+
+      <!-- Actions -->
+      <div style="padding:10px;display:flex;flex-direction:column;gap:7px;background:#fdf5f5;">
+        <!-- Upload button -->
+        <div class="img-upload-area" style="padding:9px;position:relative;background:#fff;border-color:rgba(192,24,42,.2);">
+          <input type="file" accept="image/*" onchange="handleSlideUpload(${i},this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
+          <div style="font-family:'Oswald',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--red);text-align:center;">
+            📤 ${hasImg ? 'Replace' : 'Upload Photo'}
+          </div>
+        </div>
+        <!-- Remove button (only if has image) -->
+        ${hasImg
+          ? `<button class="btn-del" style="width:100%;padding:6px;" onclick="removeSlide(${i})">✕ Remove</button>`
+          : `<div style="height:28px;"></div>`
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function handleSlideUpload(idx, input){
+  const file=input.files[0]; if(!file)return;
+  const m=document.getElementById('sliderAdminMsg');
+  m.className='ok-msg'; m.textContent='⏳ Compressing...';
+  try{
+    const b64=await compressImage(file,1600,900,0.85);
+    if(!sliderData.images) sliderData.images=['','','','',''];
+    sliderData.images[idx]=b64;
+    await save('ysfc_slider',sliderData);
+    renderAdminSlider(); renderSlider();
+    m.textContent=`✓ Slide ${idx+1} uploaded!`;
+    setTimeout(()=>m.textContent='',3000);
+  }catch(e){m.className='err-msg';m.textContent='✕ Failed.';}
+}
+
+async function removeSlide(idx){
+  if(!confirm(`Remove Slide ${idx+1}?`))return;
+  sliderData.images[idx]='';
+  await save('ysfc_slider',sliderData);
+  renderAdminSlider(); renderSlider();
+}
+
+async function saveSliderSettings(){
+  sliderData.interval = parseInt(document.getElementById('sliderInterval').value)||5;
+  await save('ysfc_slider',sliderData);
+  startSliderTimer();
+  const m=document.getElementById('sliderAdminMsg');
+  m.className='ok-msg'; m.textContent='✓ Saved!';
+  setTimeout(()=>m.textContent='',2000);
+}
+
+/* ══ ADMIN TEAM PHOTO ══ */
+async function handleTeamPhoto(input){
+  const file=input.files[0];if(!file)return;
+  const msg=document.getElementById('teamPhotoMsg');
+  msg.className='ok-msg';msg.textContent='⏳ Compressing image...';
+  try{
+    const b64=await compressImage(file,1400,700,0.88);
+    teamPhoto.img=b64;
+    await save('ysfc_teamphoto',teamPhoto);
+    renderAdminTeamPhoto();renderTeamPhoto();
+    msg.textContent='✓ Team photo uploaded!';
+    setTimeout(()=>msg.textContent='',3000);
+  }catch(e){msg.className='err-msg';msg.textContent='✕ Failed to process image.';}
+}
+async function removeTeamPhoto(){
+  if(!confirm('Remove team photo?'))return;
+  teamPhoto.img='';
+  await save('ysfc_teamphoto',teamPhoto);
+  renderAdminTeamPhoto();renderTeamPhoto();
+}
+async function saveTeamPhotoMeta(){
+  teamPhoto.captionEn=document.getElementById('tpCaptionEn').value.trim()||'Our Team · 2026';
+  teamPhoto.captionBn=document.getElementById('tpCaptionBn').value.trim()||'আমাদের দল · ২০২৬';
+  await save('ysfc_teamphoto',teamPhoto);
+  renderTeamPhoto();
+  const m=document.getElementById('teamPhotoMsg');
+  m.className='ok-msg';m.textContent='✓ Caption saved!';
+  setTimeout(()=>m.textContent='',2500);
+}
+function renderAdminTeamPhoto(){
+  const wrap=document.getElementById('teamPhotoAdminPreview');
+  document.getElementById('tpCaptionEn').value=teamPhoto.captionEn||'';
+  document.getElementById('tpCaptionBn').value=teamPhoto.captionBn||'';
+  if(teamPhoto.img){
+    wrap.innerHTML=`
+      <img class="img-preview-rect" src="${teamPhoto.img}" alt="Team Photo" style="max-height:180px;">
+      <div style="font-family:'Oswald',sans-serif;font-size:.75rem;color:rgba(240,244,255,.35);letter-spacing:1px;">Current team photo</div>`;
+  } else {
+    wrap.innerHTML=`<div style="font-family:'Oswald',sans-serif;font-size:.8rem;color:rgba(240,244,255,.3);letter-spacing:1px;padding:10px 0;">No team photo uploaded yet.</div>`;
+  }
+}
+
+/* ══ ADMIN STATS ══ */
+function renderAdminStats(){
+  document.getElementById('statsEditGrid').innerHTML=stats.map((s,i)=>`
+    <div class="stat-edit-card">
+      <label>${s.keyEn} / ${s.keyBn}</label>
+      <input id="sv_${i}" value="${s.val}">
+    </div>`).join('');
+}
+async function saveStats(){
+  stats.forEach((s,i)=>{s.val=document.getElementById('sv_'+i).value.trim();});
+  await save('ysfc_stats',stats);renderStats();alert('✓ Stats saved!');
+}
+
+/* ══ ADMIN CONTACT ══ */
+function renderAdminContact(){
+  const c=contact;
+  document.getElementById('cAddrEn').value=c.addrEn||'';document.getElementById('cAddrBn').value=c.addrBn||'';
+  document.getElementById('cPhone').value=c.phone||'';document.getElementById('cEmail').value=c.email||'';
+  document.getElementById('cTrainEn').value=c.trainEn||'';document.getElementById('cTrainBn').value=c.trainBn||'';
+  document.getElementById('cFb').value=c.fb||'';document.getElementById('cIg').value=c.ig||'';
+}
+async function saveContact(){
+  contact={addrEn:document.getElementById('cAddrEn').value.trim(),addrBn:document.getElementById('cAddrBn').value.trim(),phone:document.getElementById('cPhone').value.trim(),email:document.getElementById('cEmail').value.trim(),trainEn:document.getElementById('cTrainEn').value.trim(),trainBn:document.getElementById('cTrainBn').value.trim(),fb:document.getElementById('cFb').value.trim()||'#',ig:document.getElementById('cIg').value.trim()||'#'};
+  await save('ysfc_contact',contact);renderContact();
+  const m=document.getElementById('contactSaveMsg');
+  m.className='ok-msg';m.textContent='✓ Contact saved!';setTimeout(()=>m.textContent='',2500);
+}
+
+/* ══ ADMIN ABOUT ══ */
+function renderAdminAbout(){
+  document.getElementById('aP1En').value=about.p1En||'';document.getElementById('aP1Bn').value=about.p1Bn||'';
+  document.getElementById('aP2En').value=about.p2En||'';document.getElementById('aP2Bn').value=about.p2Bn||'';
+  document.getElementById('aP3En').value=about.p3En||'';document.getElementById('aP3Bn').value=about.p3Bn||'';
+}
+async function saveAbout(){
+  about={p1En:document.getElementById('aP1En').value.trim(),p1Bn:document.getElementById('aP1Bn').value.trim(),p2En:document.getElementById('aP2En').value.trim(),p2Bn:document.getElementById('aP2Bn').value.trim(),p3En:document.getElementById('aP3En').value.trim(),p3Bn:document.getElementById('aP3Bn').value.trim()};
+  await save('ysfc_about',about);renderAbout();
+  const m=document.getElementById('aboutSaveMsg');
+  m.className='ok-msg';m.textContent='✓ About saved!';setTimeout(()=>m.textContent='',2500);
+}
+
+/* ══ MODAL HELPERS ══ */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));});
+
+/* ══ REVEAL ══ */
+function setupReveal(){
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:0.07});
+  document.querySelectorAll('.reveal:not(.vis)').forEach(el=>obs.observe(el));
+}
+
+init();
+
+// Touch/swipe on hero
+(function(){
+  let tx=0;
+  const hero=document.getElementById('heroSection');
+  hero.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+  hero.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>50){ dx<0?sliderNext():sliderPrev(); }
+  },{passive:true});
+  // Keyboard
+  document.addEventListener('keydown',e=>{
+    if(document.getElementById('admin-panel').classList.contains('open'))return;
+    if(e.key==='ArrowRight')sliderNext();
+    if(e.key==='ArrowLeft')sliderPrev();
+  });
+})();
+</script>
+</body>
+</html>
